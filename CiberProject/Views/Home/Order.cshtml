@@ -5,10 +5,10 @@
 
     string keySearch = Context.Request.Query["keySearch"].ToString();
 
-    int orderBy = (int)(ViewData["orderBy"]);
-    int pageSize = (int)(ViewData["pageSize"]);
-    int pageIndex = (int)(ViewData["pageIndex"]);
-    int rowNumber = (int)(ViewData["rowNumber"]);
+    //int orderBy = (int)(ViewData["orderBy"]);
+    //int pageSize = (int)(Model.pageSize);
+    //int pageIndex = (int)(Model.pageIndex);
+    //int rowNumber = (int)(ViewData["rowNumber"]);
 }
 <h2>@ViewData["Title"]</h2>
 
@@ -31,8 +31,8 @@
                 <a asp-action="Order"
                    asp-route-orderBy="0"
                    asp-route-keySearch="@keySearch"
-                   asp-route-pageSize="@ViewData["pageSize"]"
-                   asp-route-pageIndex="@ViewData["pageIndex"]">
+                   asp-route-pageSize="@Model.pageSize"
+                   asp-route-pageIndex="@Model.pageIndex">
                     ProductName
                 </a>
             </th>
@@ -40,8 +40,8 @@
                 <a asp-action="Order"
                    asp-route-orderBy="1"
                    asp-route-keySearch="@keySearch"
-                   asp-route-pageSize="@ViewData["pageSize"]"
-                   asp-route-pageIndex="@ViewData["pageIndex"]">
+                   asp-route-pageSize="@Model.pageSize"
+                   asp-route-pageIndex="@Model.pageIndex">
                     CategoryName
                 </a>
             </th>
@@ -49,8 +49,8 @@
                 <a asp-action="Order"
                    asp-route-orderBy="2"
                    asp-route-keySearch="@keySearch"
-                   asp-route-pageSize="@ViewData["pageSize"]"
-                   asp-route-pageIndex="@ViewData["pageIndex"]">
+                   asp-route-pageSize="@Model.pageSize"
+                   asp-route-pageIndex="@Model.pageIndex">
                     CustomerName
                 </a>
             </th>
@@ -77,10 +77,10 @@
                     @Html.DisplayFor(modelItem => item.CustomerName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.OrderDate)
+                    @(item.OrderDate.HasValue ? item.OrderDate.Value.Date.ToString("dd-MMM-yyyy") : null)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Amout)
+                    @Html.DisplayFor(modelItem => item.Amount)
                 </td>
             </tr>
         }
@@ -94,42 +94,42 @@
 
 <div class="row justify-content-center">
     <ul class="pagination">
-        @if (rowNumber > 0)
+        @if (Model.rowNumber > 0)
         {
 
             <li class="page-item mr-2">
                 <a class="page-link"
                    asp-action="Order"
-                   asp-route-orderBy="@orderBy"
+                   asp-route-orderBy="@Model.orderBy"
                    asp-route-keySearch="@keySearch"
-                   asp-route-pageSize="@ViewData["pageSize"]"
+                   asp-route-pageSize="@Model.pageSize"
                    asp-route-pageIndex="1">
                     First
                 </a>
             </li>
-            if (pageIndex > 1) {
+            if (Model.pageIndex > 1) {
                 <li class="page-item mr-2">
                     <a class="page-link"
                        asp-action="Order"
-                       asp-route-orderBy="@orderBy"
+                       asp-route-orderBy="@Model.orderBy"
                        asp-route-keySearch="@keySearch"
-                       asp-route-pageSize="@ViewData["pageSize"]"
-                       asp-route-pageIndex="@(pageIndex - 1)">
+                       asp-route-pageSize="@Model.pageSize"
+                       asp-route-pageIndex="@(Model.pageIndex - 1)">
                         Previous
                     </a>
                 </li>
             }
 
-            @for (int i = 1; i <= Math.Ceiling((decimal)rowNumber / pageSize); i++)
+            @for (int i = 1; i <= Math.Ceiling((decimal)(Model.rowNumber / Model.pageSize)); i++)
             {
-                if (i == pageIndex)
+                if (i == Model.pageIndex)
                 {
                     <li class="page-item mr-2 active">
                         <a class="page-link"
                            asp-action="Order"
-                           asp-route-orderBy="@orderBy"
+                           asp-route-orderBy="@Model.orderBy"
                            asp-route-keySearch="@keySearch"
-                           asp-route-pageSize="@ViewData["pageSize"]"
+                           asp-route-pageSize="@Model.pageSize"
                            asp-route-pageIndex="@i">
                             @i
                         </a>
@@ -140,9 +140,9 @@
                     <li class="page-item mr-2">
                         <a class="page-link"
                            asp-action="Order"
-                           asp-route-orderBy="@orderBy"
+                           asp-route-orderBy="@Model.orderBy"
                            asp-route-keySearch="@keySearch"
-                           asp-route-pageSize="@ViewData["pageSize"]"
+                           asp-route-pageSize="@Model.pageSize"
                            asp-route-pageIndex="@i">
                             @i
                         </a>
@@ -150,14 +150,14 @@
                 }
             }
 
-            if (pageIndex < @Math.Ceiling((decimal)rowNumber / pageSize)) {
+            if (Model.pageIndex < @Math.Ceiling((decimal)(Model.rowNumber / Model.pageSize))) {
                 <li class="page-item mr-2">
                     <a class="page-link"
                         asp-action="Order"
-                        asp-route-orderBy="@orderBy"
+                        asp-route-orderBy="@Model.orderBy"
                         asp-route-keySearch="@keySearch"
-                        asp-route-pageSize="@ViewData["pageSize"]"
-                        asp-route-pageIndex="@(pageIndex + 1)">
+                        asp-route-pageSize="@Model.pageSize"
+                        asp-route-pageIndex="@(Model.pageIndex + 1)">
                         Next
                     </a>
                 </li>
@@ -168,10 +168,10 @@
             <li class="page-item mr-2">
                 <a class="page-link"
                    asp-action="Order"
-                   asp-route-orderBy="@orderBy"
+                   asp-route-orderBy="@Model.orderBy"
                    asp-route-keySearch="@keySearch"
-                   asp-route-pageSize="@ViewData["pageSize"]"
-                   asp-route-pageIndex="@Math.Ceiling((decimal)rowNumber / pageSize)">
+                   asp-route-pageSize="@Model.pageSize"
+                   asp-route-pageIndex="@Math.Ceiling((decimal)(Model.rowNumber / Model.pageSize))">
                     Last
                 </a>
             </li>
@@ -223,7 +223,7 @@
 
                     <div class="form-group">
                         <label>Amount:</label>
-                        <input type="number" name="Amout" class="form-control" />
+                        <input type="number" name="Amount" class="form-control" />
                     </div>
 
                     <div class="modal-footer">

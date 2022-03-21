@@ -50,6 +50,16 @@ namespace CiberProject.Models.Entity
                 entity.Property(e => e.OrderDate).HasColumnType("datetime");
 
                 entity.Property(e => e.OrderName).HasMaxLength(250);
+
+                entity.HasOne(d => d.CustomerNavigation)
+                    .WithMany(p => p.Order)
+                    .HasForeignKey(d => d.Customer)
+                    .HasConstraintName("fk_customer");
+
+                entity.HasOne(d => d.ProductNavigation)
+                    .WithMany(p => p.Order)
+                    .HasForeignKey(d => d.Product)
+                    .HasConstraintName("fk_product");
             });
 
             modelBuilder.Entity<Product>(entity =>
@@ -61,6 +71,11 @@ namespace CiberProject.Models.Entity
                 entity.Property(e => e.Price)
                     .HasMaxLength(10)
                     .IsFixedLength();
+
+                entity.HasOne(d => d.CategoryNavigation)
+                    .WithMany(p => p.Product)
+                    .HasForeignKey(d => d.Category)
+                    .HasConstraintName("fk_category");
             });
 
             OnModelCreatingPartial(modelBuilder);

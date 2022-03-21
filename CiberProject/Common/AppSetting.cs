@@ -32,7 +32,7 @@ namespace PAKNAPI.Common
 
 		public string GetConnectstring()
 		{
-			return Configuration["ConnectionStrings:Default"];
+			return Configuration["ConnectionStrings"];
 		}
 	}
 }

@@ -8,8 +8,11 @@ namespace CiberProject.Models.Entity
         public int Id { get; set; }
         public int? Customer { get; set; }
         public int? Product { get; set; }
-        public int? Amout { get; set; }
+        public int? Amount { get; set; }
         public DateTime? OrderDate { get; set; }
         public string OrderName { get; set; }
+
+        public virtual Customer CustomerNavigation { get; set; }
+        public virtual Product ProductNavigation { get; set; }
     }
 }

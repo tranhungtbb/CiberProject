@@ -1,4 +1,5 @@
 using CiberProject.Models.Entity;
+using CiberProject.Services;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -38,6 +39,9 @@ namespace CiberProject
 
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IAppSetting, AppSetting>();
+
+            services.AddTransient<IOrderService, OrderService>();
+
 
 
             services.AddDbContext<ApplicationDbContext>(options =>

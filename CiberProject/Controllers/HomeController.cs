@@ -1,6 +1,7 @@
 ﻿using CiberProject.Models;
 using CiberProject.Models.Entity;
 using CiberProject.Models.ModelView;
+using CiberProject.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,13 +24,13 @@ namespace CiberProject.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IConfiguration _config;
-        private readonly IAppSetting _appSetting;
+        private readonly IOrderService _orderService;
 
-        public HomeController(ILogger<HomeController> logger, IConfiguration config, IAppSetting appSetting)
+        public HomeController(ILogger<HomeController> logger, IConfiguration config, IOrderService orderService)
         {
             _logger = logger;
             _config = config;
-            _appSetting = appSetting;
+            _orderService = orderService;
         }
         [HttpGet]
         public IActionResult Login() {
@@ -78,15 +79,7 @@ namespace CiberProject.Controllers
         {
             try
             {
-                OrderModelResponse response = new OrderModelResponse();
-                response.listOrder = await new OrderModelView(_appSetting).GetListOrder(keySearch, orderBy, pageSize, pageIndex);
-                response.dropDownCustomer = await new DropDown(_appSetting).GetDropDownCustomer();
-                response.dropDownProduct = await new DropDown(_appSetting).GetDropDownProduct();
-                ViewData["rowNumber"] = response.listOrder.Count() == 0 ? 0 : response.listOrder[0].RowNumber;
-                ViewData["orderBy"] = orderBy;
-                ViewData["pageSize"] = pageSize;
-                ViewData["pageIndex"] = pageIndex;
-
+                var response = await _orderService.getListOrder(keySearch, orderBy, pageSize, pageIndex);
 
                 return View(response);
             }

@@ -43,6 +43,11 @@ namespace CiberProject.Models.ModelView
         public List<OrderModelView> listOrder { get; set; }
         public List<DropDown> dropDownProduct { get; set; }
         public List<DropDown> dropDownCustomer { get; set; }
+
+        public int? rowNumber { get; set; }
+        public int? orderBy { get; set; }
+        public int? pageSize { get; set; }
+        public int? pageIndex { get; set; }
     }
 
     public class DropDown
