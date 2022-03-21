@@ -1,0 +1,3 @@
+2022-03-17T18:03:31.2166434+07:00  [INF] Application started. Press Ctrl+C to shut down. (dcaefe54)
+2022-03-17T18:03:31.2325620+07:00  [INF] Hosting environment: "Development" (c3307c92)
+2022-03-17T18:03:31.2360376+07:00  [INF] Content root path: "D:\HocTap\BaiTap\asp.net MVC\CiberProject\CiberProject" (b5d60022)

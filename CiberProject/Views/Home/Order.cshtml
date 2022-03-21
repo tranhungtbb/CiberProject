@@ -1,0 +1,237 @@
+﻿@model CiberProject.Models.ModelView.OrderModelResponse
+
+@{
+    ViewData["Title"] = "Order ";
+
+    string keySearch = Context.Request.Query["keySearch"].ToString();
+
+    int orderBy = (int)(ViewData["orderBy"]);
+    int pageSize = (int)(ViewData["pageSize"]);
+    int pageIndex = (int)(ViewData["pageIndex"]);
+    int rowNumber = (int)(ViewData["rowNumber"]);
+}
+<h2>@ViewData["Title"]</h2>
+
+
+<form asp-action="Order" method="get">
+    <div class="form-actions form-group d-flex">
+        <p>Enter category to search</p>
+        <input type="text" class="form-control w-25 mx-3" name="keySearch" />
+        <input type="submit" value="Search" class="btn btn-outline-primary" />
+
+
+    </div>
+</form>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Order"
+                   asp-route-orderBy="0"
+                   asp-route-keySearch="@keySearch"
+                   asp-route-pageSize="@ViewData["pageSize"]"
+                   asp-route-pageIndex="@ViewData["pageIndex"]">
+                    ProductName
+                </a>
+            </th>
+            <th>
+                <a asp-action="Order"
+                   asp-route-orderBy="1"
+                   asp-route-keySearch="@keySearch"
+                   asp-route-pageSize="@ViewData["pageSize"]"
+                   asp-route-pageIndex="@ViewData["pageIndex"]">
+                    CategoryName
+                </a>
+            </th>
+            <th>
+                <a asp-action="Order"
+                   asp-route-orderBy="2"
+                   asp-route-keySearch="@keySearch"
+                   asp-route-pageSize="@ViewData["pageSize"]"
+                   asp-route-pageIndex="@ViewData["pageIndex"]">
+                    CustomerName
+                </a>
+            </th>
+            <th>
+                OrderDate
+            </th>
+
+            <th>
+                Amount
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.listOrder)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustomerName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrderDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Amout)
+                </td>
+            </tr>
+        }
+        @if (Model.listOrder.Count() == 0) {
+            <tr>
+                <td colspan="5">Không tìm thấy dữ liệu</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="row justify-content-center">
+    <ul class="pagination">
+        @if (rowNumber > 0)
+        {
+
+            <li class="page-item mr-2">
+                <a class="page-link"
+                   asp-action="Order"
+                   asp-route-orderBy="@orderBy"
+                   asp-route-keySearch="@keySearch"
+                   asp-route-pageSize="@ViewData["pageSize"]"
+                   asp-route-pageIndex="1">
+                    First
+                </a>
+            </li>
+            if (pageIndex > 1) {
+                <li class="page-item mr-2">
+                    <a class="page-link"
+                       asp-action="Order"
+                       asp-route-orderBy="@orderBy"
+                       asp-route-keySearch="@keySearch"
+                       asp-route-pageSize="@ViewData["pageSize"]"
+                       asp-route-pageIndex="@(pageIndex - 1)">
+                        Previous
+                    </a>
+                </li>
+            }
+
+            @for (int i = 1; i <= Math.Ceiling((decimal)rowNumber / pageSize); i++)
+            {
+                if (i == pageIndex)
+                {
+                    <li class="page-item mr-2 active">
+                        <a class="page-link"
+                           asp-action="Order"
+                           asp-route-orderBy="@orderBy"
+                           asp-route-keySearch="@keySearch"
+                           asp-route-pageSize="@ViewData["pageSize"]"
+                           asp-route-pageIndex="@i">
+                            @i
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item mr-2">
+                        <a class="page-link"
+                           asp-action="Order"
+                           asp-route-orderBy="@orderBy"
+                           asp-route-keySearch="@keySearch"
+                           asp-route-pageSize="@ViewData["pageSize"]"
+                           asp-route-pageIndex="@i">
+                            @i
+                        </a>
+                    </li>
+                }
+            }
+
+            if (pageIndex < @Math.Ceiling((decimal)rowNumber / pageSize)) {
+                <li class="page-item mr-2">
+                    <a class="page-link"
+                        asp-action="Order"
+                        asp-route-orderBy="@orderBy"
+                        asp-route-keySearch="@keySearch"
+                        asp-route-pageSize="@ViewData["pageSize"]"
+                        asp-route-pageIndex="@(pageIndex + 1)">
+                        Next
+                    </a>
+                </li>
+            }
+
+            
+
+            <li class="page-item mr-2">
+                <a class="page-link"
+                   asp-action="Order"
+                   asp-route-orderBy="@orderBy"
+                   asp-route-keySearch="@keySearch"
+                   asp-route-pageSize="@ViewData["pageSize"]"
+                   asp-route-pageIndex="@Math.Ceiling((decimal)rowNumber / pageSize)">
+                    Last
+                </a>
+            </li>
+        }
+
+    </ul>
+</div>
+
+
+<p class="d-flex justify-content-end">
+    <a data-toggle="modal" data-target="#exampleModal">Create new order</a>
+</p>
+
+<form method="post" asp-action="AddOrder" asp-controller="Home">
+    <div id="exampleModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Customer Details Form</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>OrderName:</label>
+                        <input type="text" name="OrderName" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Product:</label>
+                        <select name="Product" class="form-control" 
+                            asp-items="@(new SelectList(Model.dropDownProduct, "Value", "Text"))">
+                            <option value="">--Select--</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Customer:</label>
+                        <select name="Customer" class="form-control"
+                                asp-items="@(new SelectList(Model.dropDownCustomer, "Value", "Text"))">
+                            <option value="">--Select--</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>OrderName:</label>
+                        <input type="date" name="OrderDate" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Amount:</label>
+                        <input type="number" name="Amout" class="form-control" />
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
