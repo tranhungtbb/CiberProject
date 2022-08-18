@@ -1,58 +1,42 @@
-# The name of the workflow.
-# This is the name that's displayed for status
-# badges (commonly embedded in README.md files).
-name: build and test
+name: .NET Core Deploy to IIS
 
-# Trigger this workflow on a push, or pull request to
-# the main branch, when either C# or project files changed
-on:
-  push:
-  pull_request:
-    branches: [ main ]
-    paths-ignore:
-    - 'README.md'
+on: 
+  # push:
+    # branches:
+    #   - "self-hosted"
+  workflow_dispatch:
 
-# Create an environment variable named DOTNET_VERSION
-# and set it as "3.1.x"
-env:
-  DOTNET_VERSION: | 
-      3.1.x
-      5.0.x
-      6.0.x
-
-# Defines a single job named "build-and-test"
 jobs:
-  build-and-test:
+  build-and-deploy:
 
-    # When the workflow runs, this is the name that is logged
-    # This job will run three times, once for each "os" defined
-    name: build-and-test-${{matrix.os}}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
-
-    # Each job run contains these five steps
+    runs-on: self-hosted
+    
     steps:
-
-    # 1) Check out the source code so that the workflow can access it.
     - uses: actions/checkout@v2
 
-    # 2) Set up the .NET CLI environment for the workflow to use.
-    #    The .NET version is specified by the environment variable.
-    - name: Setup .NET
+    - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
+        dotnet-version: 3.0.100
+    
+    # dotnet build and publish
+    - name: Build with dotnet
+      run: dotnet build --configuration Release .\dotnet-core-webapp
 
-    # 3) Restore the dependencies and tools of a project or solution.
-    - name: Install dependencies
-      run: dotnet restore
+    - name: dotnet publish 
+      run: |
+        dotnet publish -c Release -o dotnetcorewebapp .\dotnet-core-webapp
+    - name: Deploy to IIS
+      run: |
+        iisreset /stop
+        Copy-Item ./dotnetcorewebapp/* C:/inetpub/wwwroot/dotnetcore-webapp -Recurse -Force
+        iisreset /start
+    
+    - name: Curl the website as a smoke test
+      run: curl http://localhost/dotnetcore-webapp
 
-    # 4) Build a project or solution and all of its dependencies.
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
-
-    # 5) Test a project or solution.
-    - name: Test
-      run: dotnet test --no-restore --verbosity normal
+    - name: Run Web Test
+      run: |
+        dotnet build --configuration Release .\dotnet-core-webapp.webtest
+        cd .\dotnet-core-webapp.webtests
+        dotnet test
